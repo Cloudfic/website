@@ -8,7 +8,7 @@ twitter_username: iagobonifacio
 github_username: iagobonifacio
 
 # Build settings
-theme: minima
+theme: beautiful-jekyll
 plugins:
   - jekyll-feed
 
