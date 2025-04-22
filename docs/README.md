@@ -1,0 +1,28 @@
+## Getting Started
+
+Welcome to the Cloudfic Data Platform Documentation Repository! This repository contains a wealth of information about our cloud architecture, engineering practices, security guidelines, and cost optimization strategies.
+
+### Navigating the Repository
+
+- **CI&CD**: Continuous Integration and Continuous Delivery practices.
+- **Cost&Performance**: Strategies for optimizing cloud costs and performance.
+- **DR&Backup**: Disaster Recovery and Backup procedures.
+- **Data**: Data platform architecture and pipelines.
+- **Engineering**: Engineering best practices and guidelines.
+- **General**: General best practices and guidelines.
+- **Infrastructure&Architecture**: Infrastructure and architectural blueprints.
+- **Security**: Security guidelines and best practices.
+
+### Contributing
+
+1.  Fork the repository.
+2.  Create a new branch for your changes.
+3.  Make your changes and commit them with clear, concise messages.
+4.  Submit a pull request.
+
+## Glossary
+
+- **CI/CD**: Continuous Integration/Continuous Delivery - A set of practices that automate the software release process.
+- **DR**: Disaster Recovery - The process of recovering from a disaster and restoring data and services.
+- **ETL**: Extract, Transform, Load - A process used to extract data from various sources, transform it into a usable format, and load it into a data warehouse.
+- **IAM**: Identity and Access Management - A framework for managing access to cloud resources.
