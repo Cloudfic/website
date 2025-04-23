@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>m-cloudcomposer</title>
+<link rel="stylesheet" href="../assets/css/main.css">
+</head><body>
+<h1>m-cloudcomposer</h1><pre>
+module "composer_create_environment_v2" {
+  source  = "terraform-google-modules/composer/google//modules/create_environment_v2"
+  version = "6.1.0"
+
+  composer_env_name = "dp-composer-cluster-sn-stg"
+  project_id        = var.project_id
+  network           = var.network
+  subnetwork        = var.public_subnetwork_name
+  region            = var.region
+
+  composer_service_account = var.composer_service_account
+
+  environment_size = "ENVIRONMENT_SIZE_SMALL"
+  image_version    = var.composer_version
+
+  env_variables = {
+    "ENVIRONMENT"        = var.env
+    "LOG_ENVIRONMENT"    = "prod"
+    "SECRETS_PROJECT_ID" = var.project_number
+    "SALESFORCE_ENV"     = "sandbox"
+    "SUBNETWORK_NAME"    = var.public_subnetwork_name
+  }
+
+  scheduler = {
+    count      = 1
+    cpu        = "0.5"
+    memory_gb  = 2
+    storage_gb = 1
+  }
+
+  web_server = {
+    cpu        = "1"
+    memory_gb  = 2
+    storage_gb = 1
+  }
+
+  worker = {
+    cpu        = "1"
+    memory_gb  = 2
+    storage_gb = 5
+    min_count  = 1
+    max_count  = 5
+  }
+
+  triggerer = {
+    count     = 1
+    cpu       = "0.5"
+    memory_gb = 1
+    count     = 1
+  }
+
+  airflow_config_overrides = {
+    "core-dags_are_paused_at_creation" = "true"
+  }
+}
+</pre></body></html>

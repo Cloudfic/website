@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>registry</title>
+<link rel="stylesheet" href="../assets/css/main.css">
+</head><body>
+<h1>registry</h1><pre>
+resource "google_artifact_registry_repository" "data_platform_stg" {
+  project       = var.project_id
+  location      = var.region
+  repository_id = "dp-ar-airflow-sn-stg"
+  description   = "Artifact Registry repository for the data-platform team in the STG environment"
+  format        = "DOCKER" # Or "MAVEN", "NPM", "PYTHON"
+}</pre></body></html>

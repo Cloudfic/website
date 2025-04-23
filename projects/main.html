@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>main</title>
+<link rel="stylesheet" href="../assets/css/main.css">
+</head><body>
+<h1>main</h1><pre>
+terraform {
+  cloud {
+    organization = "sn-data-platform"
+    workspaces {
+      name = "data-platform-terraform-stg"
+    }
+  }
+}
+</pre></body></html>

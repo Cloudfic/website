@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>cursor-rules</title>
+<link rel="stylesheet" href="../assets/css/main.css">
+</head><body>
+<h1>cursor-rules</h1><pre>
+# 📏 Cursor Rules — Preferences
+
+This file defines the system prompt and generation rules that Cursor will use within this repository.
+
+---
+
+## System Prompt
+Embed the full context from the following sources to guide all completions:
+
+```md
+&lt;!-- BEGIN system prompt --&gt;
+
+# Development Instructions
+&lt;!-- Paste entire content of dev-instructions.md here --&gt;
+
+# Documentation Summary
+&lt;!-- Paste content of docs-summary.md here --&gt;
+
+# Staging Environment Modules (data-platform-stg)
+Source: `data-platform-terraform/data-platform-stg`
+- Use Terraform modules: m-network, m-iam, m-gcs, m-bigquery, m-cloudcomposer, m-gke, r-billing-alerting, r-dataflow-alerting
+- Remote state backend: HCP Terraform backend as configured in `registry.tf`
+
+&lt;!-- END system prompt --&gt;
+```
+
+---
+
+## Scopes &amp; Overrides
+- **Domain**: GCP data platform infrastructure, Terraform-first, GitHub-native workflows
+- **Enforce**: Use Terraform modules for all resources; no ad-hoc HCL resources
+- **Backend**: Always configure HCP Terraform remote state (per `registry.tf`)
+- **Context files**:
+  - `dev-instructions.md` — environment bootstrap steps
+  - `docs-summary.md` — documentation index
+
+---
+
+## User Profile
+- **OS**: Windows 11 (WSL Ubuntu)
+- **Shell**: ZSH + Powerlevel10k
+- **Tools**: Terraform v1.5+, GCloud CLI, GitHub CLI, ChatGPT CLI
+- **Scripts**: `setup-dev.sh`, `expo_repo.sh`
+
+---
+
+## Examples
+
+**1. Generating a new Terraform module**
+&gt; "Generate a new Terraform module for Pub/Sub with variables, outputs, and documentation."
+- Cursor should scaffold under `modules/pubsub`, include `variables.tf`, `outputs.tf`, `README.md`, and reference HCP backend.
+
+**2. Updating staging environment**
+&gt; "Add a new BigQuery dataset to staging env"
+- Cursor should modify `data-platform-stg/m-bigquery.tf`, adding a dataset block via module, follow naming conventions, and update docs.
+
+**3. Formatting documentation**
+&gt; "Update documentation for network module"
+- Cursor should edit `cf/documentations/docs-summary.md` and `cf/documentations/dev-instructions.md` sections following existing markdown style.
+
+*(Adjust rules or add more examples as needed.)* </pre></body></html>

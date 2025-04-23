@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>r-dataflow-alerting</title>
+<link rel="stylesheet" href="../assets/css/main.css">
+</head><body>
+<h1>r-dataflow-alerting</h1><pre>
+resource "google_pubsub_topic" "dataflow_alerts" {
+  name = "dp-topic-dataflow-alerts-sn-stg"
+}
+
+resource "google_pubsub_topic_iam_member" "dataflow_alerts_publisher" {
+  topic  = google_pubsub_topic.dataflow_alerts.name
+  role   = "roles/pubsub.publisher"
+  member = "serviceAccount:cloud-monitoring-notification@system.gserviceaccount.com"
+}
+
+resource "google_monitoring_notification_channel" "dataflow_email_channel" {
+  display_name = "${var.team} - ${var.env} email group"
+  type         = "email"
+
+  labels = {
+    email_address = "email-sender@secondnature.com"
+  }
+}
+
+resource "google_monitoring_notification_channel" "dataflow_pubsub_channel" {
+  display_name = "Dataflow Alerts Channel"
+  type         = "pubsub"
+
+  labels = {
+    topic = google_pubsub_topic.dataflow_alerts.id
+  }
+}
+
+resource "google_monitoring_alert_policy" "dataflow_job_failure" {
+  display_name = "Dataflow Job Failure Alert - Policy"
+  combiner     = "OR"
+
+  documentation {
+    content   = &lt;&lt;-EOF
+## Data Processing Alert: Invoice Generation Delayed
+
+### 🚨 Alert: A data processing task did not complete successfully.
+
+### 📍 Project  
+${var.project_id}
+
+### 🛠️ Job  
+`$${resource.labels.job_name}`
+
+### 🌍 Region  
+`$${resource.labels.region}`
+
+## ❗ What Happened?  
+A scheduled job responsible for **generating invoice details** did not run as expected.  
+This issue could lead to **delays in invoice processing and data availability**.  
+
+## 📊 Impact  
+This failure might cause **delays in data processing**, which could affect related workflows and reporting.  
+
+## 👥 Next Steps  
+The **Data Platform Team** is actively investigating the issue to resolve it as quickly as possible.  
+No action is required on your part at this time.  
+
+🔍 **[View Dataflow Job Details](https://console.cloud.google.com/dataflow/jobs?project=${var.project_id})**
+EOF
+    mime_type = "text/markdown"
+    subject   = "Dataflow Job Failure Alert"
+  }
+
+  alert_strategy {
+    auto_close           = "3600s"
+    notification_prompts = ["OPENED", "CLOSED"]
+  }
+
+  conditions {
+    display_name = "Dataflow Job - Failed"
+
+    condition_threshold {
+      filter = "resource.type = \"dataflow_job\" AND resource.labels.job_name = starts_with(\"generate\") AND metric.type = \"dataflow.googleapis.com/job/is_failed\""
+
+      aggregations {
+        alignment_period   = "60s"
+        per_series_aligner = "ALIGN_MEAN"
+      }
+
+      comparison = "COMPARISON_GT"
+      duration   = "60s"
+
+      trigger {
+        count = 1
+      }
+    }
+  }
+
+  notification_channels = [
+    google_monitoring_notification_channel.dataflow_email_channel.name,
+    google_monitoring_notification_channel.dataflow_pubsub_channel.name
+  ]
+
+  enabled = true
+}
+</pre></body></html>

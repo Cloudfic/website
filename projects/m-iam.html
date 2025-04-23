@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>m-iam</title>
+<link rel="stylesheet" href="../assets/css/main.css">
+</head><body>
+<h1>m-iam</h1><pre>
+resource "google_project_iam_custom_role" "data_directors_role" {
+  project     = var.project_id
+  role_id     = "dataDirectorsRole"
+  title       = "Data Directors Role"
+  description = "Specific resource creation."
+  permissions = [
+    "resourcemanager.projects.get",
+    "compute.instances.create",
+    "compute.instances.delete",
+    "bigquery.jobs.create",
+    "bigquery.datasets.get",
+    "bigquery.tables.get",
+    "storage.buckets.create",
+  ]
+}
+
+resource "google_project_iam_custom_role" "cloud_specialists_role" {
+  project     = var.project_id
+  role_id     = "cloudSpecialistsRole"
+  title       = "Cloud Specialists Role"
+  description = "Full editor rights with ability to create resources."
+  permissions = [
+    "resourcemanager.projects.get",
+    "bigquery.datasets.create",
+    "bigquery.tables.create",
+    "storage.buckets.create",
+    "compute.instances.create",
+    "iam.serviceAccounts.actAs",
+    "compute.networks.create",
+    "iam.serviceAccounts.create",
+  ]
+}
+
+resource "google_project_iam_custom_role" "data_engineers_role" {
+  project     = var.project_id
+  role_id     = "dataEngineersRole"
+  title       = "Data Engineers Role"
+  description = "Edit access but no resource creation rights."
+  permissions = [
+    "bigquery.tables.update",
+    "bigquery.tables.updateData",
+    "bigquery.tables.getData",
+    "bigquery.datasets.get",
+    "bigquery.tables.create",
+    "bigquery.tables.get",
+    "bigquery.jobs.create",
+    "bigquery.routines.create",
+    "bigquery.routines.delete",
+    "bigquery.routines.update",
+    "bigquery.routines.list",
+    "storage.objects.create",
+    "storage.folders.create",
+    "compute.instances.get",
+    "compute.instances.update",
+    "artifactregistry.files.upload",
+    "artifactregistry.locations.get",
+    "artifactregistry.packages.get",
+    "artifactregistry.packages.update",
+    "artifactregistry.repositories.downloadArtifacts",
+    "artifactregistry.repositories.get",
+    "artifactregistry.repositories.uploadArtifacts",
+    "artifactregistry.rules.get",
+    "artifactregistry.tags.create",
+    "artifactregistry.versions.get",
+  ]
+}
+
+resource "google_project_iam_custom_role" "data_analysts_role" {
+  project     = var.project_id
+  role_id     = "dataAnalystsRole"
+  title       = "Data Analysts Role"
+  description = "BigQuery and data analysis read-only permissions."
+  permissions = [
+    "bigquery.tables.update",
+    "bigquery.tables.get",
+    "bigquery.tables.list",
+    "bigquery.datasets.get",
+    "bigquery.jobs.get",
+    "bigquery.jobs.create",
+    "storage.objects.create",
+    "storage.folders.create",
+  ]
+}
+
+resource "google_project_iam_custom_role" "data_architects_role" {
+  project     = var.project_id
+  role_id     = "dataArchitectsRole"
+  title       = "Data Architects Role"
+  description = "Full editing rights for specific resources."
+  permissions = [
+    "resourcemanager.projects.get",
+    "bigquery.datasets.create",
+    "bigquery.tables.create",
+    "bigquery.datasets.update",
+    "bigquery.tables.update",
+    "storage.objects.create",
+    "storage.objects.delete",
+    "compute.instances.update",
+    "compute.instances.get",
+  ]
+}
+
+# Assign Users to Custom Roles
+resource "google_project_iam_member" "assign_data_directors" {
+  for_each = toset([
+    "squasem@secondnature.com"
+  ])
+  project = var.project_id
+  role    = "projects/${var.project_id}/roles/${google_project_iam_custom_role.data_directors_role.role_id}"
+  member  = "user:${each.value}"
+}
+
+resource "google_project_iam_member" "assign_cloud_specialists" {
+  for_each = toset([
+    "ibonifacio@secondnature.com"
+  ])
+  project = var.project_id
+  role    = "projects/${var.project_id}/roles/${google_project_iam_custom_role.cloud_specialists_role.role_id}"
+  member  = "user:${each.value}"
+}
+
+resource "google_project_iam_member" "assign_data_engineers" {
+  for_each = toset([
+    "mlopes@secondnature.com",
+    "pscilingo@secondnature.com",
+    "artur.selitskiy@secondnature.com"
+  ])
+  project = var.project_id
+  role    = "projects/${var.project_id}/roles/${google_project_iam_custom_role.data_engineers_role.role_id}"
+  member  = "user:${each.value}"
+}
+
+resource "google_project_iam_member" "assign_data_analysts" {
+  for_each = toset([
+    "afurtado@secondnature.com",
+    "aoliveira@secondnature.com",
+    "artur.selitskiy@secondnature.com"
+  ])
+  project = var.project_id
+  role    = "projects/${var.project_id}/roles/${google_project_iam_custom_role.data_analysts_role.role_id}"
+  member  = "user:${each.value}"
+}
+
+resource "google_project_iam_member" "assign_data_architects" {
+  for_each = toset([
+    "gdio@secondnature.com",
+    "afurtado@secondnature.com"
+  ])
+  project = var.project_id
+  role    = "projects/${var.project_id}/roles/${google_project_iam_custom_role.data_architects_role.role_id}"
+  member  = "user:${each.value}"
+}
+</pre></body></html>
